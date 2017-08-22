@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.ReleaseDataDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="io.renren.entity.ReleaseDataEntity" id="releaseDataMap">
+		<result property="dId" column="d_id"/>
+		<result property="websiteId" column="website_id"/>
+		<result property="newsTitle" column="news_title"/>
+		<result property="newsUrl" column="news_url"/>
+		<result property="releaseTime" column="release_time"/>
+		<result property="editor" column="editor"/>
+		<result property="source" column="source"/>
+	</resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.ReleaseDataEntity">
+		select * from release_data where d_id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.ReleaseDataEntity">
+		select * from release_data
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
+			<otherwise>
+				order by d_id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from release_data
+	</select>
+
+	<insert id="save" parameterType="io.renren.entity.ReleaseDataEntity" useGeneratedKeys="true" keyProperty="dId">
+		insert into release_data
+		(
+		`website_id`,
+		`news_title`,
+		`news_url`,
+		`release_time`,
+		`editor`,
+		`source`
+		)
+		values
+		(
+		#{websiteId},
+		#{newsTitle},
+		#{newsUrl},
+		#{releaseTime},
+		#{editor},
+		#{source}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.renren.entity.ReleaseDataEntity">
+		update release_data
+		<set>
+			<if test="websiteId != null">`website_id` = #{websiteId}, </if>
+			<if test="newsTitle != null">`news_title` = #{newsTitle}, </if>
+			<if test="newsUrl != null">`news_url` = #{newsUrl}, </if>
+			<if test="releaseTime != null">`release_time` = #{releaseTime}, </if>
+			<if test="editor != null">`editor` = #{editor}, </if>
+			<if test="source != null">`source` = #{source}</if>
+		</set>
+		where d_id = #{dId}
+	</update>
+
+	<delete id="delete">
+		delete from release_data where d_id = #{value}
+	</delete>
+
+	<delete id="deleteBatch">
+		delete from release_data where d_id in
+		<foreach item="dId" collection="array" open="(" separator="," close=")">
+			#{dId}
+		</foreach>
+	</delete>
+
+
+	<select id="findListByWebsiteAll" resultType="java.util.HashMap">
+		SELECT rw.website website,rd.*
+		FROM release_website rw,release_data rd
+		WHERE rw.w_id=rd.website_id
+	</select>
+
+</mapper>

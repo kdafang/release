@@ -1,0 +1,171 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>网站信息发布</title>
+	<script src="${rc.contextPath}/statics/plugins/echarts/echarts.min.js"></script>
+	<script src="${rc.contextPath}/statics/plugins/jquery/jquery-1.9.1.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div class="container">
+	<div id="main" style="width: 100%;height:400px;"></div>
+	<div id="customized" style="width: 80%;height: 400px;margin: auto"></div>
+</div>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('main'));
+    var cusChart = echarts.init(document.getElementById('customized'));
+
+
+    // 柱状图，显示标题，图例和空的坐标轴
+    myChart.setOption({
+        title: {
+            text: '网站信息发布量柱状图',
+            x:'center'
+        },
+        tooltip: {},
+//        legend: {
+//            data:['信息数量']
+//        },
+        yAxis: {
+            data: []
+        },
+        xAxis: {
+            type:'value',
+            axisLabel: {
+                formatter: '{value} 条'
+            }
+		},
+        series: [{
+            name: '信息数量',
+            type: 'bar',
+            data: [],
+            markPoint : {
+                itemStyle: {
+                    normal: {
+                        color:'#000',
+                        borderColor: '#87cefa',
+                        borderWidth: 1,            // 标注边线线宽，单位px，默认为1
+                    },
+                    emphasis: {
+                        borderColor: '#1e90ff',
+                        borderWidth: 5,
+                    }
+                },
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                itemStyle:{
+                    normal:{
+                        color:'#000',
+					}
+				},
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        }]
+    });
+    myChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+
+    //    饼图
+    cusChart.setOption({
+        title : {
+            text: '网站信息量发布饼图',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: []
+        },
+        series : [
+            {
+                name: '访问来源',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    })
+    cusChart.showLoading();
+    setInterval(function () {
+        var names=[];    //类别数组（实际用来盛放X轴坐标值）
+        var nums=[];
+        var res=[];
+        $.ajax({
+            type : "get",
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url : "${rc.contextPath}/f/release/web/total",    //请求发送到TestServlet处
+            data : {},
+            dataType : "json",        //返回数据形式为json
+            success : function(result) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                if (result) {
+                    for(var i=0;i<result.length;i++){
+                        names.push(result[i].website);
+                        nums.push(result[i].numbers);
+                        res.push({
+                            name:names[i],value:nums[i]
+                        });
+                    }
+                    myChart.hideLoading();    //隐藏加载动画
+                    myChart.setOption({        //加载数据图表
+                        yAxis: {
+                            data: names
+                        },
+                        series: [{
+                            // 根据名字对应到相应的系列
+                            name: '信息数量',
+                            data: nums
+                        }]
+                    });
+
+                    cusChart.hideLoading();
+                    cusChart.setOption({
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: names,
+                        },
+                        series : [
+                            {
+                                data:res,
+                            }
+                        ]
+                    })
+                }
+
+            },
+            error : function(errorMsg) {
+                //请求失败时执行该函数
+                alert("图表请求数据失败!");
+                myChart.hideLoading();
+                cusChart.hideLoading();
+            }
+        })
+    },5000)
+</script>
+</body>
+</html>
