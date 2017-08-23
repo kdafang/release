@@ -258,7 +258,7 @@
 			<if test="websiteName!=null" >
 				website=#{websiteName} AND
 			</if>
-			release_time like #{time}% group by website
+			release_time like concat (#{time},'%') group by website
 		</if>
 		<if test="flag ==1">
 			select count(*) numbers,substring(release_time,12,2) release_time
@@ -266,7 +266,7 @@
 			<if test="websiteName!=null" >
 				website=#{websiteName} AND
 			</if>
-			release_time like #{day}% group by substring(release_time,12,2)
+			release_time like concat (#{time},'%')  group by substring(release_time,12,2)
 		</if>
 	</select>
 

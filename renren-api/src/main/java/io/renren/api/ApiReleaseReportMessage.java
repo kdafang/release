@@ -3,6 +3,8 @@ package io.renren.api;
 import io.renren.annotation.IgnoreAuth;
 import io.renren.entity.ReleaseNewsEntity;
 import io.renren.service.ReleaseNewsService;
+import io.renren.utils.BatchInsert;
+import io.renren.utils.JsonFormat;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +42,12 @@ public class ApiReleaseReportMessage {
         if(releaseNewsList.size()>0){
             int newsSize=0;
             try{
-                newsSize = releaseNewsService.insertList(releaseNewsList);
+//                newsSize = releaseNewsService.insertList(releaseNewsList);
+                newsSize = BatchInsert.batchList(releaseNewsList,50,releaseNewsService);
             }catch (DataAccessException e){
                 jsonObject.put("code",400);
                 jsonObject.put("message","数据提交异常，请通知管理员");
-                jsonObject.put("error",e.getMessage());
+//                jsonObject.put("error",e.getMessage());
                 return jsonObject;
             }
             jsonObject.put("code",201);
