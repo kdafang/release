@@ -1,6 +1,7 @@
 package io.renren.dao;
 
 import io.renren.entity.ReleaseNewsEntity;
+import org.omg.CORBA.OBJ_ADAPTER;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ public interface ReleaseNewsDao extends BaseDao<ReleaseNewsEntity> {
      * 批量插入数据
      */
     int insertList(List<ReleaseNewsEntity> releaseNewsList);
+
+    int deleteList(List<HashMap<String,Object>> deleteList);
     /**
      * 查询所有数据
      * @return
@@ -72,5 +75,6 @@ public interface ReleaseNewsDao extends BaseDao<ReleaseNewsEntity> {
      * @return
      */
     List<HashMap> getWebsiteList();
+
 
 }

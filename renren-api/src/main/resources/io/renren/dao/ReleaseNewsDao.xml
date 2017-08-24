@@ -130,6 +130,17 @@
 		source = values(source)
 	</insert>
 
+	<delete id="deleteList" parameterType="java.util.List">
+		DELETE FROM release_news WHERE news_url in
+		<foreach collection="list" item="item" separator="," open="(" close=")">
+			#{item.newsUrl}
+		</foreach>
+		AND 
+		<foreach collection="list" item="item" separator="," open="(" close=")">
+			#{item.webstie}
+		</foreach>
+	</delete>
+
 
 	<select id="findListAll" resultType="io.renren.entity.ReleaseNewsEntity">
 		SELECT * FROM release_news

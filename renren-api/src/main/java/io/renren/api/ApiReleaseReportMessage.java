@@ -1,17 +1,20 @@
 package io.renren.api;
 
 import io.renren.annotation.IgnoreAuth;
+import io.renren.entity.DeleteEntity;
 import io.renren.entity.ReleaseNewsEntity;
 import io.renren.service.ReleaseNewsService;
 import io.renren.utils.BatchInsert;
 import io.renren.utils.JsonFormat;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -67,6 +70,9 @@ public class ApiReleaseReportMessage {
     @RequestMapping(value = "deleteMessage",method = RequestMethod.POST)
     @ResponseBody
     public JSONObject delMessage(@RequestBody String message){
+        JSONArray jsonArray = JSONArray.fromObject(message);
+        List<HashMap<String,Object>> deleteList = JSONArray.toList(jsonArray,new DeleteEntity(),new JsonConfig());
+
         System.out.println(message);
         JSONObject jsonObject=new JSONObject();
         return jsonObject;
