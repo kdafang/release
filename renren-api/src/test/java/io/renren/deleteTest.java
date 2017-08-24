@@ -16,8 +16,8 @@ public class deleteTest {
 
     public static void main(String[] args) {
         String url="http://localhost:8080/api/deleteMessage";
-        String json="[{\"newsUrl\":\"http://cordial99.blog.163.com\"}," +
-                "{\"newsUrl\":\"http://cordial99.blog.163.com/xxxxx\"}]";
+        String json="[{\"newsUrl\":\"bx.snbinxian.gov.cn/bxyw/33600.htm\"}," +
+                "{\"newsUrl\":\"bx.snbinxian.gov.cn/bxyw/33601.htm\"}]";
         try {
             httpPostWithJSON(url,json);
         } catch (Exception e) {
