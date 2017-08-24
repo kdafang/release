@@ -1,7 +1,7 @@
 package io.renren.controller;
 
 import io.renren.service.ReleaseNewsService;
-import io.renren.util.jsonUitl;
+import io.renren.util.JsonUitl;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +48,7 @@ public class ReleaseWebController {
         map.put("websiteName",website);
         map.put("flag",flag);
         List<HashMap> findByTime = releaseNewsService.findByTimeNow(map);
-        JSONArray jsonArray = new JSONArray();
-        jsonUitl jsonUitl=new jsonUitl();
-        jsonArray=jsonUitl.getJson(findByTime);
+        JSONArray jsonArray = JsonUitl.getJson(findByTime);
         return jsonArray;
     }
 
@@ -63,9 +61,7 @@ public class ReleaseWebController {
         map.put("flag",flag);
 
         List<HashMap> findByPastTime = releaseNewsService.findByPastTime(map);
-        JSONArray jsonArray = new JSONArray();
-        jsonUitl jsonUitl=new jsonUitl();
-        jsonArray=jsonUitl.getJson(findByPastTime);
+        JSONArray jsonArray = JsonUitl.getJson(findByPastTime);
         return jsonArray;
     }
     @RequestMapping(value = "findBetweenTime",method = RequestMethod.GET)
@@ -77,9 +73,7 @@ public class ReleaseWebController {
         map.put("time2",time2);
         map.put("flag",flag);
         List<HashMap> findBetweenTime = releaseNewsService.findBetweenTime(map);
-        JSONArray jsonArray = new JSONArray();
-        jsonUitl jsonUitl=new jsonUitl();
-        jsonArray=jsonUitl.getJson(findBetweenTime);
+        JSONArray jsonArray = JsonUitl.getJson(findBetweenTime);
         return jsonArray;
     }
     @RequestMapping(value = "findByTimeWeek",method = RequestMethod.GET)
@@ -90,9 +84,7 @@ public class ReleaseWebController {
         map.put("time",time);
         map.put("flag",flag);
         List<HashMap> findByTimeWeek = releaseNewsService.findByTimeWeek(map);
-        JSONArray jsonArray = new JSONArray();
-        jsonUitl jsonUitl=new jsonUitl();
-        jsonArray=jsonUitl.getJson(findByTimeWeek);
+        JSONArray jsonArray = JsonUitl.getJson(findByTimeWeek);
         return jsonArray;
 
     }
@@ -104,9 +96,7 @@ public class ReleaseWebController {
         map.put("time",time);
         map.put("flag",flag);
         List<HashMap> findByTimeMon = releaseNewsService.findByTimeMon(map);
-        JSONArray jsonArray = new JSONArray();
-        jsonUitl jsonUitl=new jsonUitl();
-        jsonArray=jsonUitl.getJson(findByTimeMon);
+        JSONArray jsonArray = JsonUitl.getJson(findByTimeMon);
         return jsonArray;
     }
     @RequestMapping(value = "findByTimeDay",method = RequestMethod.GET)
@@ -117,9 +107,7 @@ public class ReleaseWebController {
         map.put("time",time);
         map.put("flag",flag);
         List<HashMap> findByTimeDay = releaseNewsService.findByTimeDay(map);
-        JSONArray jsonArray = new JSONArray();
-        jsonUitl jsonUitl=new jsonUitl();
-        jsonArray=jsonUitl.getJson(findByTimeDay);
+        JSONArray jsonArray = JsonUitl.getJson(findByTimeDay);
         return jsonArray;
     }
 
