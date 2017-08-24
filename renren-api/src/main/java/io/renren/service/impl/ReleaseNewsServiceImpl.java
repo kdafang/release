@@ -108,4 +108,9 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<HashMap> getWebsiteList() {
+		return releaseNewsDao.getWebsiteList();
+	}
 }

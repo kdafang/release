@@ -67,4 +67,10 @@ public interface ReleaseNewsDao extends BaseDao<ReleaseNewsEntity> {
      */
     List<ReleaseNewsEntity> selectRepeat(String newsurl);
 
+    /**
+     * 获取站点名称列表
+     * @return
+     */
+    List<HashMap> getWebsiteList();
+
 }

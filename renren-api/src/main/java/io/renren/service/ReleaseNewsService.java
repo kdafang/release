@@ -50,4 +50,6 @@ public interface ReleaseNewsService {
 	List<HashMap> findByTimeMon(HashMap<String, Object> map);
 
 	List<HashMap> findByTimeDay(HashMap<String, Object> map);
+
+	List<HashMap> getWebsiteList();
 }

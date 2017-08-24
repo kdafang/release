@@ -270,4 +270,8 @@
 		</if>
 	</select>
 
+	<select id="getWebsiteList" resultType="java.util.HashMap">
+		select website from release_news group by website;
+	</select>
+
 </mapper>

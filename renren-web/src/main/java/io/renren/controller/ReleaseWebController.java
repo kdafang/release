@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,17 +19,15 @@ import java.util.List;
 /**
  * Created by 李博 on 2017-05-17.
  */
-@Controller
+@RestController
 @RequestMapping(value = "/f/release/web")
 public class ReleaseWebController {
 
     @Autowired
     private ReleaseNewsService releaseNewsService;
 
-
-    @RequestMapping(value = "total",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray newsTotal(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "total")
+    public JSONArray newsTotal(){
         List<HashMap> websiteNumber = releaseNewsService.webSiteNumber();
         JSONArray jsonArray = new JSONArray();
         for(int i=0;i<websiteNumber.size();i++){
@@ -37,13 +36,12 @@ public class ReleaseWebController {
                 jsonObject.put(key,websiteNumber.get(i).get(key));
             }
             jsonArray.add(jsonObject);
-            // System.out.println(jsonObject);
         }
         return jsonArray;
     }
-    @RequestMapping(value = "findByTimeNow",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray findByTime(HttpServletRequest request, HttpServletResponse response,String website,String flag) {
+
+    @RequestMapping(value = "findByTimeNow")
+    public JSONArray findByTime(String website,String flag) {
         HashMap<String, Object> map=new HashMap<String,Object>();
         map.put("websiteName",website);
         map.put("flag",flag);
@@ -52,9 +50,8 @@ public class ReleaseWebController {
         return jsonArray;
     }
 
-    @RequestMapping(value = "findByPastTime",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray  findByPastTime(HttpServletRequest request, HttpServletResponse response,String website,int num,String flag) {
+    @RequestMapping(value = "findByPastTime")
+    public JSONArray  findByPastTime(String website,int num,String flag) {
         HashMap<String, Object> map=new HashMap<String, Object>();
         map.put("websiteName",website);
         map.put("num",num);
@@ -64,9 +61,9 @@ public class ReleaseWebController {
         JSONArray jsonArray = JsonUitl.getJson(findByPastTime);
         return jsonArray;
     }
-    @RequestMapping(value = "findBetweenTime",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray  findBetweenTime(HttpServletRequest request, HttpServletResponse response,String time1,String time2,String website,String flag) {
+
+    @RequestMapping(value = "findBetweenTime")
+    public JSONArray  findBetweenTime(String time1,String time2,String website,String flag) {
         HashMap<String, Object> map=new HashMap<String, Object> ();
         map.put("websiteName",website);
         map.put("time1",time1);
@@ -76,9 +73,9 @@ public class ReleaseWebController {
         JSONArray jsonArray = JsonUitl.getJson(findBetweenTime);
         return jsonArray;
     }
-    @RequestMapping(value = "findByTimeWeek",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray  findByTimeWeek(HttpServletRequest request, HttpServletResponse response,String time,String website,String flag) {
+
+    @RequestMapping(value = "findByTimeWeek")
+    public JSONArray  findByTimeWeek(String time,String website,String flag) {
         HashMap<String, Object> map=new HashMap<String, Object> ();
         map.put("websiteName",website);
         map.put("time",time);
@@ -88,9 +85,9 @@ public class ReleaseWebController {
         return jsonArray;
 
     }
-    @RequestMapping(value = "findByTimeMon",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray  findByTimeMon(HttpServletRequest request, HttpServletResponse response,String time,String website,String flag) {
+
+    @RequestMapping(value = "findByTimeMon")
+    public JSONArray  findByTimeMon(String time,String website,String flag) {
         HashMap<String, Object> map=new HashMap<String, Object> ();
         map.put("websiteName",website);
         map.put("time",time);
@@ -99,9 +96,9 @@ public class ReleaseWebController {
         JSONArray jsonArray = JsonUitl.getJson(findByTimeMon);
         return jsonArray;
     }
-    @RequestMapping(value = "findByTimeDay",method = RequestMethod.GET)
-    @ResponseBody
-    public JSONArray  findByTimeDay(HttpServletRequest request, HttpServletResponse response,String time,String website,String flag) {
+
+    @RequestMapping(value = "findByTimeDay")
+    public JSONArray  findByTimeDay(String time,String website,String flag) {
         HashMap<String, Object> map=new HashMap<String, Object> ();
         map.put("websiteName",website);
         map.put("time",time);
