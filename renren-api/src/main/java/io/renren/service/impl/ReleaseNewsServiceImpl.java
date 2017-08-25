@@ -19,7 +19,7 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 
 	@Autowired
 	private ReleaseNewsDao releaseNewsDao;
-	static HashMap<String, Object> map=new HashMap<String,Object>();
+
 	
 	@Override
 	public ReleaseNewsEntity queryObject(Integer id){
@@ -77,6 +77,7 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 
 	@Override
 	public List<HashMap> findByTimeNow(String website,String flag) {
+        HashMap<String, Object> map=new HashMap<String,Object>();
 		map.put("websiteName",website);
 		map.put("flag",flag);
 		return releaseNewsDao.findByTimeNow(map);
@@ -87,13 +88,18 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 
 	@Override
-	public List<HashMap> findByPastTime(HashMap<String, Object> map) {
-		return releaseNewsDao.findByPastTime(map);
+	public List<HashMap> findByPastTime(String website,int num,String flag) {
+        HashMap<String, Object> map=new HashMap<String,Object>();
+	    map.put("websiteName",website);
+        map.put("num",num);
+        map.put("flag",flag);
+	    return releaseNewsDao.findByPastTime(map);
 	}
 
 	@Override
 	public List<HashMap> findBetweenTime(String time1,String time2,String website,String flag) {
-		map.put("websiteName",website);
+        HashMap<String, Object> map=new HashMap<String,Object>();
+        map.put("websiteName",website);
 		map.put("time1",time1);
 		map.put("time2",time2);
 		map.put("flag",flag);
@@ -101,16 +107,27 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 
 	@Override
-	public List<HashMap> findByTimeWeek(HashMap<String, Object> map) {
+	public List<HashMap> findByTimeWeek(String time,String website,String flag) {
+        HashMap<String, Object> map=new HashMap<String,Object>();
+        map.put("websiteName",website);
+        map.put("time",time);
+        map.put("flag",flag);
 		return releaseNewsDao.findByTimeWeek(map);
 	}
 	@Override
-	public List<HashMap> findByTimeMon(HashMap<String, Object> map) {
+	public List<HashMap> findByTimeMon(String time,String website,String flag) {
+        HashMap<String, Object> map=new HashMap<String,Object>();
+        map.put("websiteName",website);
+        map.put("time",time);
+        map.put("flag",flag);
 		return releaseNewsDao.findByTimeMon(map);
 	}
 	@Override
-	public List<HashMap> findByTimeDay(HashMap<String, Object> map) {
-
+	public List<HashMap> findByTimeDay(String time,String website,String flag) {
+        HashMap<String, Object> map=new HashMap<String,Object>();
+        map.put("websiteName",website);
+        map.put("time",time);
+        map.put("flag",flag);
 		return releaseNewsDao.findByTimeDay(map);
 	}
 
@@ -131,7 +148,9 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 
 	@Override
 	public Boolean existWebsite(String website) {
-            Boolean b=true;
-		return b;
+        List<HashMap> websites=getWebsiteList();
+        HashMap<String, Object> map1=new HashMap<String,Object>();
+        map1.put("website",website);
+		return websites.contains(map1);
 	}
 }
