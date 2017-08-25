@@ -39,19 +39,20 @@ public interface ReleaseNewsService {
 
 	boolean selectRepeat(String newsurl);
 
-	List<HashMap> findByTimeNow(HashMap<String, Object> map);
+	List<HashMap> findByTimeNow(String website,String flag);
 
 	List<HashMap> webSiteNumber();
 
-	List<HashMap> findByPastTime(HashMap<String, Object> map);
+	List<HashMap> findByPastTime(String website,int num,String flag);
 
-	List<HashMap> findBetweenTime(HashMap<String, Object> map);
+	List<HashMap> findBetweenTime(String time1,String time2,String website,String flag);
 
-	List<HashMap> findByTimeWeek(HashMap<String, Object> map);
+	List<HashMap> findByTimeWeek(String time,String website,String flag);
 
-	List<HashMap> findByTimeMon(HashMap<String, Object> map);
+	List<HashMap> findByTimeMon(String time,String website,String flag);
 
-	List<HashMap> findByTimeDay(HashMap<String, Object> map);
+	List<HashMap> findByTimeDay(String time,String website,String flag);
 
 	List<HashMap> getWebsiteList();
+	Boolean  existWebsite(String website);//判断站点是否存在
 }

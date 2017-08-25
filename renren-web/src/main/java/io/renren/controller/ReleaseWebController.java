@@ -1,18 +1,15 @@
 package io.renren.controller;
 
 import io.renren.service.ReleaseNewsService;
+import io.renren.util.AjaxResponse;
+import io.renren.util.DecideUitl;
 import io.renren.util.JsonUitl;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +22,6 @@ public class ReleaseWebController {
 
     @Autowired
     private ReleaseNewsService releaseNewsService;
-
     @RequestMapping(value = "total")
     public JSONArray newsTotal(){
         List<HashMap> websiteNumber = releaseNewsService.webSiteNumber();
@@ -40,72 +36,114 @@ public class ReleaseWebController {
         return jsonArray;
     }
 
+    /**
+     * 查询当天的信息
+     * @param website 站点名称
+     * @param flag     标识 flag=1时 查询的结果为当天24小时每小时的总访问量
+     * @return
+     */
+
     @RequestMapping(value = "findByTimeNow")
-    public JSONArray findByTime(String website,String flag) {
-        HashMap<String, Object> map=new HashMap<String,Object>();
-        map.put("websiteName",website);
-        map.put("flag",flag);
-        List<HashMap> findByTime = releaseNewsService.findByTimeNow(map);
+    public AjaxResponse findByTime(String website,String flag) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        DecideUitl decideUitl=new DecideUitl();
+        List<HashMap> findByTime = releaseNewsService.findByTimeNow(website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTime);
-        return jsonArray;
-    }
+        if(jsonArray.size()==0){
+            ajaxResponse.setMessage("当天暂无数据！");
+        }
+        if(website!=null){
+            ajaxResponse= decideUitl.declideWebsite(ajaxResponse,website,releaseNewsService);
+        }
 
+        ajaxResponse.setData(jsonArray);
+        return ajaxResponse;
+      }
+
+
+
+
+
+    /**
+     * 查询当天到num天内的信息，如num=10是过去10天中的所有信息
+     * @param website 站点名称
+     * @param num      天数 （非空）
+     * @param flag  标识 传入flag=1时，查询的结果为每天的总访问量
+     * @return
+     */
     @RequestMapping(value = "findByPastTime")
-    public JSONArray  findByPastTime(String website,int num,String flag) {
-        HashMap<String, Object> map=new HashMap<String, Object>();
-        map.put("websiteName",website);
-        map.put("num",num);
-        map.put("flag",flag);
-
-        List<HashMap> findByPastTime = releaseNewsService.findByPastTime(map);
+    public AjaxResponse findByPastTime(String website,int num,String flag) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        List<HashMap> findByPastTime = releaseNewsService.findByPastTime(website,num,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByPastTime);
-        return jsonArray;
+        ajaxResponse.setData(jsonArray);
+        return ajaxResponse;
     }
 
+    /**
+     * 查询两个时间段之间的信息
+     * @param time1 时间 格式为 yyyy-MM-dd
+     * @param time2 时间 格式为 yyyy-MM-dd
+     * @param website 站点名称
+     * @param flag 标识 传入flag=1时，查询的结果为每天的总访问量
+     * @return
+     */
     @RequestMapping(value = "findBetweenTime")
-    public JSONArray  findBetweenTime(String time1,String time2,String website,String flag) {
-        HashMap<String, Object> map=new HashMap<String, Object> ();
-        map.put("websiteName",website);
-        map.put("time1",time1);
-        map.put("time2",time2);
-        map.put("flag",flag);
-        List<HashMap> findBetweenTime = releaseNewsService.findBetweenTime(map);
+    public AjaxResponse findBetweenTime(String time1,String time2,String website,String flag) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        List<HashMap> findBetweenTime = releaseNewsService.findBetweenTime(time1,time2,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findBetweenTime);
-        return jsonArray;
+        ajaxResponse.setData(jsonArray);
+        return ajaxResponse;
     }
 
+    /**
+     * 查询给定时间所在周的信息
+     * @param time  时间 格式为 yyyy-MM-dd
+     * @param website 站点名称
+     * @param flag  标识 传入flag=1时，查询的结果为每天的总访问量
+     * @return
+     */
     @RequestMapping(value = "findByTimeWeek")
-    public JSONArray  findByTimeWeek(String time,String website,String flag) {
-        HashMap<String, Object> map=new HashMap<String, Object> ();
-        map.put("websiteName",website);
-        map.put("time",time);
-        map.put("flag",flag);
-        List<HashMap> findByTimeWeek = releaseNewsService.findByTimeWeek(map);
+    public AjaxResponse  findByTimeWeek(String time,String website,String flag) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        List<HashMap> findByTimeWeek = releaseNewsService.findByTimeWeek(time,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeWeek);
-        return jsonArray;
+        ajaxResponse.setData(jsonArray);
+        return ajaxResponse;
 
     }
 
+    /**
+     * 查询给定时间所在月的信息
+     * @param time  时间 格式为 yyyy-MM-dd
+     * @param website 站点名称
+     * @param flag  标识 传入flag=1时，查询的结果为每天的总访问量
+     * @return
+     */
     @RequestMapping(value = "findByTimeMon")
-    public JSONArray  findByTimeMon(String time,String website,String flag) {
-        HashMap<String, Object> map=new HashMap<String, Object> ();
-        map.put("websiteName",website);
-        map.put("time",time);
-        map.put("flag",flag);
-        List<HashMap> findByTimeMon = releaseNewsService.findByTimeMon(map);
+    public AjaxResponse  findByTimeMon(String time,String website,String flag) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        List<HashMap> findByTimeMon = releaseNewsService.findByTimeMon(time,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeMon);
-        return jsonArray;
+        ajaxResponse.setData(jsonArray);
+        return ajaxResponse;
     }
 
+    /**
+     * 查询具体某一天的信息
+     * @param time  时间 格式为 yyyy-MM-dd
+     * @param website 站点名称
+     * @param flag  标识 传入flag=1时，查询的结果为当天每小时的访问量
+     * @return
+     */
     @RequestMapping(value = "findByTimeDay")
-    public JSONArray  findByTimeDay(String time,String website,String flag) {
-        HashMap<String, Object> map=new HashMap<String, Object> ();
-        map.put("websiteName",website);
-        map.put("time",time);
-        map.put("flag",flag);
-        List<HashMap> findByTimeDay = releaseNewsService.findByTimeDay(map);
+    public AjaxResponse  findByTimeDay(String time,String website,String flag) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        List<HashMap> findByTimeDay = releaseNewsService.findByTimeDay(time,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeDay);
-        return jsonArray;
+        ajaxResponse.setData(jsonArray);
+        return ajaxResponse;
     }
 
 }
