@@ -16,8 +16,10 @@ import java.util.Objects;
 
 @Service("releaseNewsService")
 public class ReleaseNewsServiceImpl implements ReleaseNewsService {
+
 	@Autowired
 	private ReleaseNewsDao releaseNewsDao;
+	static HashMap<String, Object> map=new HashMap<String,Object>();
 	
 	@Override
 	public ReleaseNewsEntity queryObject(Integer id){
@@ -74,7 +76,9 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 
 	@Override
-	public List<HashMap> findByTimeNow(HashMap<String, Object> map) {
+	public List<HashMap> findByTimeNow(String website,String flag) {
+		map.put("websiteName",website);
+		map.put("flag",flag);
 		return releaseNewsDao.findByTimeNow(map);
 	}
 
@@ -88,8 +92,11 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 
 	@Override
-	public List<HashMap> findBetweenTime(HashMap<String, Object> map) {
-
+	public List<HashMap> findBetweenTime(String time1,String time2,String website,String flag) {
+		map.put("websiteName",website);
+		map.put("time1",time1);
+		map.put("time2",time2);
+		map.put("flag",flag);
 		return releaseNewsDao.findBetweenTime(map);
 	}
 
@@ -103,6 +110,7 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 	@Override
 	public List<HashMap> findByTimeDay(HashMap<String, Object> map) {
+
 		return releaseNewsDao.findByTimeDay(map);
 	}
 
@@ -119,5 +127,11 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	@Override
 	public List<HashMap> getWebsiteList() {
 		return releaseNewsDao.getWebsiteList();
+	}
+
+	@Override
+	public Boolean existWebsite(String website) {
+            Boolean b=true;
+		return b;
 	}
 }
