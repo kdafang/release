@@ -1,16 +1,9 @@
 package io.renren.entity;
 
 import java.io.Serializable;
-import java.util.Date;
-
-
 
 /**
- * 
- * 
- * @author chenshun
- * @email sunlightcs@gmail.com
- * @date 2017-06-15 17:04:09
+ * 网站信息数据实体类
  */
 public class ReleaseNewsEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

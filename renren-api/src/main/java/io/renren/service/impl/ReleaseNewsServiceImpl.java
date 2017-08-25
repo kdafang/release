@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Service("releaseNewsService")
@@ -56,6 +57,12 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	@Transactional(readOnly = false)
 	public int insertList(List<ReleaseNewsEntity> releaseNewsList){
 		return releaseNewsDao.insertList(releaseNewsList);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public int deleteList(List<HashMap<String, Object>> deleteList) {
+		return releaseNewsDao.deleteList(deleteList);
 	}
 
 	public List<ReleaseNewsEntity> findListAll(){

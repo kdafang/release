@@ -4,15 +4,17 @@ import io.renren.annotation.IgnoreAuth;
 import io.renren.entity.DeleteEntity;
 import io.renren.entity.ReleaseNewsEntity;
 import io.renren.service.ReleaseNewsService;
-import io.renren.utils.BatchInsert;
-import io.renren.utils.JsonFormat;
+import io.renren.utils.BatchList;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,11 @@ public class ApiReleaseReportMessage {
     @Autowired
     private ReleaseNewsService releaseNewsService;
 
+    /**
+     * 数据推送接口
+     * @param message
+     * @return
+     */
     @IgnoreAuth
     @RequestMapping(value = "insertMessage",method = RequestMethod.POST)
     @ResponseBody
@@ -46,7 +53,7 @@ public class ApiReleaseReportMessage {
             int newsSize=0;
             try{
 //                newsSize = releaseNewsService.insertList(releaseNewsList);
-                newsSize = BatchInsert.batchList(releaseNewsList,50,releaseNewsService);
+                newsSize = BatchList.batchInsert(releaseNewsList,50,releaseNewsService);
             }catch (DataAccessException e){
                 jsonObject.put("code",400);
                 jsonObject.put("message","数据提交异常，请通知管理员");
@@ -66,6 +73,11 @@ public class ApiReleaseReportMessage {
     }
 
 
+    /**
+     * 数据删除接口
+     * @param message
+     * @return
+     */
     @IgnoreAuth
     @RequestMapping(value = "deleteMessage",method = RequestMethod.POST)
     @ResponseBody
@@ -73,8 +85,31 @@ public class ApiReleaseReportMessage {
         JSONArray jsonArray = JSONArray.fromObject(message);
         List<HashMap<String,Object>> deleteList = JSONArray.toList(jsonArray,new DeleteEntity(),new JsonConfig());
 
-        System.out.println(message);
-        JSONObject jsonObject=new JSONObject();
-        return jsonObject;
+        JSONObject jsonObject = new JSONObject();
+        if(deleteList.size()>0){
+            int newsSize=0;
+            try{
+                newsSize = BatchList.batchDelete(deleteList,50,releaseNewsService);
+            }catch (DataAccessException e){
+                jsonObject.put("code",400);
+                jsonObject.put("message","参数提交异常，请通知管理员");
+                return jsonObject;
+            }
+            if (newsSize > 0){
+                jsonObject.put("code",201);
+                jsonObject.put("message","删除数据成功");
+                jsonObject.put("size",newsSize);
+            }else {
+                jsonObject.put("code",201);
+                jsonObject.put("message","数据不存在");
+                jsonObject.put("size",newsSize);
+            }
+            return jsonObject;
+        }
+        else{
+            jsonObject.put("code",400);
+            jsonObject.put("message","参数格式不正确");
+            return jsonObject;
+        }
     }
 }

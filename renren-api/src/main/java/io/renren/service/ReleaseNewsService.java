@@ -31,6 +31,8 @@ public interface ReleaseNewsService {
 
 	int insertList(List<ReleaseNewsEntity> releaseNewsList);
 
+	int deleteList(List<HashMap<String,Object>> deleteList);
+
 	List<ReleaseNewsEntity> findListAll();
 
 	List<ReleaseNewsEntity> webSiteTotal(String website);
