@@ -72,11 +72,21 @@ public class ReleaseWebController {
      * @return
      */
     @RequestMapping(value = "findByPastTime")
-    public AjaxResponse findByPastTime(String website,int num,String flag) {
+    public AjaxResponse findByPastTime(String website,Integer num,String flag) {
         AjaxResponse ajaxResponse = new AjaxResponse();
+        DecideUitl decideUitl=new DecideUitl();
+        if(num==null||num<0){
+            ajaxResponse.setCode(8);
+            ajaxResponse.setMessage("输入天数为空或天数小于0！");
+            return ajaxResponse;
+        }
         List<HashMap> findByPastTime = releaseNewsService.findByPastTime(website,num,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByPastTime);
         ajaxResponse.setData(jsonArray);
+        if(website!=null){
+            ajaxResponse= decideUitl.declideWebsite(ajaxResponse,website,releaseNewsService);
+        }
+
         return ajaxResponse;
     }
 
@@ -91,9 +101,24 @@ public class ReleaseWebController {
     @RequestMapping(value = "findBetweenTime")
     public AjaxResponse findBetweenTime(String time1,String time2,String website,String flag) {
         AjaxResponse ajaxResponse = new AjaxResponse();
-        List<HashMap> findBetweenTime = releaseNewsService.findBetweenTime(time1,time2,website,flag);
+        DecideUitl decideUitl=new DecideUitl();
+        List<HashMap> findBetweenTime;
+        if(time1==null ||time2==null){
+            ajaxResponse.setCode(8);
+            ajaxResponse.setMessage("输入日期为空！");
+            return ajaxResponse;
+        }
+        if(decideUitl.declideTime(time1,time2)){
+            findBetweenTime = releaseNewsService.findBetweenTime(time2,time1,website,flag);
+        }
+        else {
+            findBetweenTime = releaseNewsService.findBetweenTime(time1, time2, website, flag);
+        }
         JSONArray jsonArray = JsonUitl.getJson(findBetweenTime);
         ajaxResponse.setData(jsonArray);
+        if(website!=null){
+            ajaxResponse= decideUitl.declideWebsite(ajaxResponse,website,releaseNewsService);
+        }
         return ajaxResponse;
     }
 
@@ -107,9 +132,18 @@ public class ReleaseWebController {
     @RequestMapping(value = "findByTimeWeek")
     public AjaxResponse  findByTimeWeek(String time,String website,String flag) {
         AjaxResponse ajaxResponse = new AjaxResponse();
+        DecideUitl decideUitl=new DecideUitl();
+        if(time==null){
+            ajaxResponse.setCode(8);
+            ajaxResponse.setMessage("输入日期为空！");
+            return ajaxResponse;
+        }
         List<HashMap> findByTimeWeek = releaseNewsService.findByTimeWeek(time,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeWeek);
         ajaxResponse.setData(jsonArray);
+        if(website!=null){
+            ajaxResponse= decideUitl.declideWebsite(ajaxResponse,website,releaseNewsService);
+        }
         return ajaxResponse;
 
     }
@@ -124,9 +158,18 @@ public class ReleaseWebController {
     @RequestMapping(value = "findByTimeMon")
     public AjaxResponse  findByTimeMon(String time,String website,String flag) {
         AjaxResponse ajaxResponse = new AjaxResponse();
+        DecideUitl decideUitl=new DecideUitl();
+        if(time==null){
+            ajaxResponse.setCode(8);
+            ajaxResponse.setMessage("输入日期为空！");
+            return ajaxResponse;
+        }
         List<HashMap> findByTimeMon = releaseNewsService.findByTimeMon(time,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeMon);
         ajaxResponse.setData(jsonArray);
+        if(website!=null){
+            ajaxResponse= decideUitl.declideWebsite(ajaxResponse,website,releaseNewsService);
+        }
         return ajaxResponse;
     }
 
@@ -140,9 +183,18 @@ public class ReleaseWebController {
     @RequestMapping(value = "findByTimeDay")
     public AjaxResponse  findByTimeDay(String time,String website,String flag) {
         AjaxResponse ajaxResponse = new AjaxResponse();
+        DecideUitl decideUitl=new DecideUitl();
+        if(time==null){
+            ajaxResponse.setCode(8);
+            ajaxResponse.setMessage("输入日期为空！");
+            return ajaxResponse;
+        }
         List<HashMap> findByTimeDay = releaseNewsService.findByTimeDay(time,website,flag);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeDay);
         ajaxResponse.setData(jsonArray);
+        if(website!=null){
+            ajaxResponse= decideUitl.declideWebsite(ajaxResponse,website,releaseNewsService);
+        }
         return ajaxResponse;
     }
 
