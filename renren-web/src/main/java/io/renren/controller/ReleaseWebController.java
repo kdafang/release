@@ -111,6 +111,10 @@ public class ReleaseWebController {
             ajaxResponse.setMessage("输入日期为空！");
             return ajaxResponse;
         }
+        if(time1.equals(time2)){
+            ajaxResponse= findByTimeDay(time1,website,flag,order);
+            return ajaxResponse;
+        }
         if(decideUitl.declideTime(time1,time2)){
             findBetweenTime = releaseNewsService.findBetweenTime(time2,time1,website,flag,order);
         }
