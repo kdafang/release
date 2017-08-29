@@ -40,14 +40,15 @@ public class ReleaseWebController {
      * 查询当天的信息
      * @param website 站点名称
      * @param flag     标识 flag=1时 查询的结果为当天24小时每小时的总访问量
+     * @param order  标识 默认升序，传入order=1时,降序
      * @return
      */
 
     @RequestMapping(value = "findByTimeNow")
-    public AjaxResponse findByTime(String website,String flag) {
+    public AjaxResponse findByTime(String website,String flag,String order) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         DecideUitl decideUitl=new DecideUitl();
-        List<HashMap> findByTime = releaseNewsService.findByTimeNow(website,flag);
+        List<HashMap> findByTime = releaseNewsService.findByTimeNow(website,flag,order);
         JSONArray jsonArray = JsonUitl.getJson(findByTime);
         if(jsonArray.size()==0){
             ajaxResponse.setMessage("当天暂无数据！");
@@ -69,10 +70,11 @@ public class ReleaseWebController {
      * @param website 站点名称
      * @param num      天数 （非空）
      * @param flag  标识 传入flag=1时，查询的结果为每天的总访问量
+     * @param order  标识 默认升序，传入order=1时,降序
      * @return
      */
     @RequestMapping(value = "findByPastTime")
-    public AjaxResponse findByPastTime(String website,Integer num,String flag) {
+    public AjaxResponse findByPastTime(String website,Integer num,String flag,String order) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         DecideUitl decideUitl=new DecideUitl();
         if(num==null||num<0){
@@ -80,7 +82,7 @@ public class ReleaseWebController {
             ajaxResponse.setMessage("输入天数为空或天数小于0！");
             return ajaxResponse;
         }
-        List<HashMap> findByPastTime = releaseNewsService.findByPastTime(website,num,flag);
+        List<HashMap> findByPastTime = releaseNewsService.findByPastTime(website,num,flag,order);
         JSONArray jsonArray = JsonUitl.getJson(findByPastTime);
         ajaxResponse.setData(jsonArray);
         if(website!=null){
@@ -96,10 +98,11 @@ public class ReleaseWebController {
      * @param time2 时间 格式为 yyyy-MM-dd
      * @param website 站点名称
      * @param flag 标识 传入flag=1时，查询的结果为每天的总访问量
+     * @param order  标识 默认升序，传入order=1时,降序
      * @return
      */
     @RequestMapping(value = "findBetweenTime")
-    public AjaxResponse findBetweenTime(String time1,String time2,String website,String flag) {
+    public AjaxResponse findBetweenTime(String time1,String time2,String website,String flag,String order) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         DecideUitl decideUitl=new DecideUitl();
         List<HashMap> findBetweenTime;
@@ -109,10 +112,10 @@ public class ReleaseWebController {
             return ajaxResponse;
         }
         if(decideUitl.declideTime(time1,time2)){
-            findBetweenTime = releaseNewsService.findBetweenTime(time2,time1,website,flag);
+            findBetweenTime = releaseNewsService.findBetweenTime(time2,time1,website,flag,order);
         }
         else {
-            findBetweenTime = releaseNewsService.findBetweenTime(time1, time2, website, flag);
+            findBetweenTime = releaseNewsService.findBetweenTime(time1, time2, website,flag,order);
         }
         JSONArray jsonArray = JsonUitl.getJson(findBetweenTime);
         ajaxResponse.setData(jsonArray);
@@ -127,10 +130,11 @@ public class ReleaseWebController {
      * @param time  时间 格式为 yyyy-MM-dd
      * @param website 站点名称
      * @param flag  标识 传入flag=1时，查询的结果为每天的总访问量
+     * @param order  标识 默认升序，传入order=1时,降序
      * @return
      */
     @RequestMapping(value = "findByTimeWeek")
-    public AjaxResponse  findByTimeWeek(String time,String website,String flag) {
+    public AjaxResponse  findByTimeWeek(String time,String website,String flag,String order) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         DecideUitl decideUitl=new DecideUitl();
         if(time==null){
@@ -138,7 +142,7 @@ public class ReleaseWebController {
             ajaxResponse.setMessage("输入日期为空！");
             return ajaxResponse;
         }
-        List<HashMap> findByTimeWeek = releaseNewsService.findByTimeWeek(time,website,flag);
+        List<HashMap> findByTimeWeek = releaseNewsService.findByTimeWeek(time,website,flag,order);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeWeek);
         ajaxResponse.setData(jsonArray);
         if(website!=null){
@@ -153,10 +157,11 @@ public class ReleaseWebController {
      * @param time  时间 格式为 yyyy-MM-dd
      * @param website 站点名称
      * @param flag  标识 传入flag=1时，查询的结果为每天的总访问量
+     * @param order  标识 默认升序，传入order=1时,降序
      * @return
      */
     @RequestMapping(value = "findByTimeMon")
-    public AjaxResponse  findByTimeMon(String time,String website,String flag) {
+    public AjaxResponse  findByTimeMon(String time,String website,String flag,String order) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         DecideUitl decideUitl=new DecideUitl();
         if(time==null){
@@ -164,7 +169,7 @@ public class ReleaseWebController {
             ajaxResponse.setMessage("输入日期为空！");
             return ajaxResponse;
         }
-        List<HashMap> findByTimeMon = releaseNewsService.findByTimeMon(time,website,flag);
+        List<HashMap> findByTimeMon = releaseNewsService.findByTimeMon(time,website,flag,order);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeMon);
         ajaxResponse.setData(jsonArray);
         if(website!=null){
@@ -173,15 +178,18 @@ public class ReleaseWebController {
         return ajaxResponse;
     }
 
+
+
     /**
      * 查询具体某一天的信息
      * @param time  时间 格式为 yyyy-MM-dd
      * @param website 站点名称
      * @param flag  标识 传入flag=1时，查询的结果为当天每小时的访问量
+     * @param order  标识 默认升序，传入order=1时,降序
      * @return
      */
     @RequestMapping(value = "findByTimeDay")
-    public AjaxResponse  findByTimeDay(String time,String website,String flag) {
+    public AjaxResponse  findByTimeDay(String time,String website,String flag,String order) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         DecideUitl decideUitl=new DecideUitl();
         if(time==null){
@@ -189,7 +197,7 @@ public class ReleaseWebController {
             ajaxResponse.setMessage("输入日期为空！");
             return ajaxResponse;
         }
-        List<HashMap> findByTimeDay = releaseNewsService.findByTimeDay(time,website,flag);
+        List<HashMap> findByTimeDay = releaseNewsService.findByTimeDay(time,website,flag,order);
         JSONArray jsonArray = JsonUitl.getJson(findByTimeDay);
         ajaxResponse.setData(jsonArray);
         if(website!=null){

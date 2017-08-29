@@ -76,10 +76,16 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 
 	@Override
-	public List<HashMap> findByTimeNow(String website,String flag) {
+	public List<HashMap> findByTimeNow(String website,String flag,String order) {
         HashMap<String, Object> map=new HashMap<String,Object>();
 		map.put("websiteName",website);
 		map.put("flag",flag);
+		if("1".equals(order)){
+			map.put("order","asc");
+		}else
+		{
+			map.put("order","desc");
+		}
 		return releaseNewsDao.findByTimeNow(map);
 	}
 
@@ -88,46 +94,76 @@ public class ReleaseNewsServiceImpl implements ReleaseNewsService {
 	}
 
 	@Override
-	public List<HashMap> findByPastTime(String website,int num,String flag) {
+	public List<HashMap> findByPastTime(String website,int num,String flag,String order) {
         HashMap<String, Object> map=new HashMap<String,Object>();
 	    map.put("websiteName",website);
         map.put("num",num);
         map.put("flag",flag);
+		if("1".equals(order)){
+			map.put("order","asc");
+		}else
+		{
+			map.put("order","desc");
+		}
 	    return releaseNewsDao.findByPastTime(map);
 	}
 
 	@Override
-	public List<HashMap> findBetweenTime(String time1,String time2,String website,String flag) {
+	public List<HashMap> findBetweenTime(String time1,String time2,String website,String flag,String order) {
         HashMap<String, Object> map=new HashMap<String,Object>();
         map.put("websiteName",website);
 		map.put("time1",time1);
 		map.put("time2",time2);
 		map.put("flag",flag);
+		if("1".equals(order)){
+			map.put("order","asc");
+		}else
+		{
+			map.put("order","desc");
+		}
 		return releaseNewsDao.findBetweenTime(map);
 	}
 
 	@Override
-	public List<HashMap> findByTimeWeek(String time,String website,String flag) {
+	public List<HashMap> findByTimeWeek(String time,String website,String flag,String order) {
         HashMap<String, Object> map=new HashMap<String,Object>();
         map.put("websiteName",website);
         map.put("time",time);
         map.put("flag",flag);
+		if("1".equals(order)){
+			map.put("order","asc");
+		}else
+		{
+			map.put("order","desc");
+		}
 		return releaseNewsDao.findByTimeWeek(map);
 	}
 	@Override
-	public List<HashMap> findByTimeMon(String time,String website,String flag) {
+	public List<HashMap> findByTimeMon(String time,String website,String flag,String order) {
         HashMap<String, Object> map=new HashMap<String,Object>();
         map.put("websiteName",website);
         map.put("time",time);
         map.put("flag",flag);
+		if("1".equals(order)){
+			map.put("order","asc");
+		}else
+		{
+			map.put("order","desc");
+		}
 		return releaseNewsDao.findByTimeMon(map);
 	}
 	@Override
-	public List<HashMap> findByTimeDay(String time,String website,String flag) {
+	public List<HashMap> findByTimeDay(String time,String website,String flag,String order) {
         HashMap<String, Object> map=new HashMap<String,Object>();
         map.put("websiteName",website);
         map.put("time",time);
         map.put("flag",flag);
+		if("1".equals(order)){
+			map.put("order","asc");
+		}else
+		{
+			map.put("order","desc");
+		}
 		return releaseNewsDao.findByTimeDay(map);
 	}
 
