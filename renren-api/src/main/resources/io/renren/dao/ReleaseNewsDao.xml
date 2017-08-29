@@ -3,9 +3,9 @@
 
 <mapper namespace="io.renren.dao.ReleaseNewsDao">
 
-	<cache eviction="FIFO" flushInterval="60000" size="1024" readOnly="true" />
+    <cache eviction="FIFO" flushInterval="60000" size="1024" readOnly="true"/>
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.ReleaseNewsEntity" id="releaseNewsMap">
         <result property="id" column="id"/>
         <result property="website" column="website"/>
@@ -15,52 +15,52 @@
         <result property="newsUrl" column="news_url"/>
         <result property="editor" column="editor"/>
         <result property="source" column="source"/>
-		<association property="io.renren.entity.ReleaseWebsiteEntity" resultMap="io.renren.dao.ReleaseWebsiteDao.releaseWebsiteMap">
-		</association>
+        <association property="io.renren.entity.ReleaseWebsiteEntity"
+                     resultMap="io.renren.dao.ReleaseWebsiteDao.releaseWebsiteMap">
+        </association>
     </resultMap>
 
 
-
-	<select id="queryObject" resultType="io.renren.entity.ReleaseNewsEntity">
+    <select id="queryObject" resultType="io.renren.entity.ReleaseNewsEntity">
 		select * from release_news where id = #{value}
 	</select>
 
-	<select id="queryList" resultType="io.renren.entity.ReleaseNewsEntity">
-		select * from release_news
-		<where>
-			<if test="website != null and website.trim() != ''">
-				and `website` like concat('%',#{website},'%')
-			</if>
-			<if test="newsTitle != null and newsTitle.trim() != ''">
-				and `news_title` like concat('%',#{newsTitle},'%')
-			</if>
-		</where>
+    <select id="queryList" resultType="io.renren.entity.ReleaseNewsEntity">
+        select * from release_news
+        <where>
+            <if test="website != null and website.trim() != ''">
+                and `website` like concat('%',#{website},'%')
+            </if>
+            <if test="newsTitle != null and newsTitle.trim() != ''">
+                and `news_title` like concat('%',#{newsTitle},'%')
+            </if>
+        </where>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
             </when>
-			<otherwise>
+            <otherwise>
                 order by id desc
-			</otherwise>
+            </otherwise>
         </choose>
-		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
-		</if>
-	</select>
-	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from release_news
-		<where>
-			<if test="website != null">
-				and `website` like concat('%',#{website},'%')
-			</if>
-			<if test="newsTitle != null and newsTitle.trim() != ''">
-				and `news_title` like concat('%',#{newsTitle},'%')
-			</if>
-		</where>
-	</select>
-	 
-	<insert id="save" parameterType="io.renren.entity.ReleaseNewsEntity" useGeneratedKeys="true" keyProperty="id">
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*) from release_news
+        <where>
+            <if test="website != null">
+                and `website` like concat('%',#{website},'%')
+            </if>
+            <if test="newsTitle != null and newsTitle.trim() != ''">
+                and `news_title` like concat('%',#{newsTitle},'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="io.renren.entity.ReleaseNewsEntity" useGeneratedKeys="true" keyProperty="id">
 		insert into release_news
 		(
 			`website`, 
@@ -82,202 +82,208 @@
 			#{source}
 		)
 	</insert>
-	 
-	<update id="update" parameterType="io.renren.entity.ReleaseNewsEntity">
-		update release_news 
-		<set>
-			<if test="website != null">`website` = #{website}, </if>
-			<if test="releaseTime != null">`release_time` = #{releaseTime}, </if>
-			<if test="modifiedTime != null">`modified_time` = #{modifiedTime}, </if>
-			<if test="newsTitle != null">`news_title` = #{newsTitle}, </if>
-			<if test="newsUrl != null">`news_url` = #{newsUrl}, </if>
-			<if test="editor != null">`editor` = #{editor}, </if>
-			<if test="source != null">`source` = #{source}</if>
-		</set>
-		where id = #{id}
-	</update>
-	
-	<delete id="delete">
+
+    <update id="update" parameterType="io.renren.entity.ReleaseNewsEntity">
+        update release_news
+        <set>
+            <if test="website != null">`website` = #{website},</if>
+            <if test="releaseTime != null">`release_time` = #{releaseTime},</if>
+            <if test="modifiedTime != null">`modified_time` = #{modifiedTime},</if>
+            <if test="newsTitle != null">`news_title` = #{newsTitle},</if>
+            <if test="newsUrl != null">`news_url` = #{newsUrl},</if>
+            <if test="editor != null">`editor` = #{editor},</if>
+            <if test="source != null">`source` = #{source}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
 		delete from release_news where id = #{value}
 	</delete>
-	
-	<delete id="deleteBatch">
-		delete from release_news where id in 
-		<foreach item="id" collection="array" open="(" separator="," close=")">
-			#{id}
-		</foreach>
-	</delete>
 
-	<insert id="insertList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO release_news(
-	     website,
-		 release_time,
-		 modified_time,
-		 news_title,
-		 news_url,
-		 editor,
-		 source
-		) VALUES
-		<foreach collection="list" item="item" separator=",">
-			(#{item.website},#{item.releaseTime},#{item.modifiedTime},#{item.newsTitle},#{item.newsUrl},#{item.editor},#{item.source})
-		</foreach>
-		ON DUPLICATE KEY UPDATE
-		website = values(website),
-		release_time = values(release_time),
-		modified_time = values(modified_time),
-		news_title = values(news_title),
-		editor = values(editor),
-		source = values(source)
-	</insert>
+    <delete id="deleteBatch">
+        delete from release_news where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
-	<delete id="deleteList" parameterType="java.util.List">
-		DELETE FROM release_news WHERE news_url in
-		<foreach collection="list" item="item" separator="," open="(" close=")">
-			#{item.newsUrl}
-		</foreach>
-	</delete>
+    <insert id="insertList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO release_news(
+        website,
+        release_time,
+        modified_time,
+        news_title,
+        news_url,
+        editor,
+        source
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.website},#{item.releaseTime},#{item.modifiedTime},#{item.newsTitle},#{item.newsUrl},#{item.editor},#{item.source})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        website = values(website),
+        release_time = values(release_time),
+        modified_time = values(modified_time),
+        news_title = values(news_title),
+        editor = values(editor),
+        source = values(source)
+    </insert>
+
+    <delete id="deleteList" parameterType="java.util.List">
+        DELETE FROM release_news WHERE news_url in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.newsUrl}
+        </foreach>
+    </delete>
 
 
-	<select id="findListAll" resultType="io.renren.entity.ReleaseNewsEntity">
+    <select id="findListAll" resultType="io.renren.entity.ReleaseNewsEntity">
 		SELECT * FROM release_news
 	</select>
 
 
-	<select id="webSiteTotal" resultType="io.renren.entity.ReleaseNewsEntity" timeout="30">
+    <select id="webSiteTotal" resultType="io.renren.entity.ReleaseNewsEntity" timeout="30">
 		SELECT * FROM release_news WHERE website = #{website}
 	</select>
 
-	<select id="selectRepeat" resultType="io.renren.entity.ReleaseNewsEntity" useCache="true">
+    <select id="selectRepeat" resultType="io.renren.entity.ReleaseNewsEntity" useCache="true">
 		SELECT * FROM release_news WHERE news_url = #{newsurl}
 	</select>
 
-	<select id="webSiteNumber" resultType="java.util.HashMap">
+    <select id="webSiteNumber" resultType="java.util.HashMap">
 		SELECT website,count(*) numbers
 		FROM release_news
 		GROUP BY website
 	</select>
-	<select id="findByTimeNow" resultType="java.util.HashMap" parameterType="java.util.Map">
-		<if test="flag!=1">
-			SELECT count(*) numbers,
-			website
-			FROM release_news
-			WHERE
-			<if test="websiteName!=null">
-				website=#{websiteName} AND
-			</if>
-			to_days(release_time) = to_days(now())group by website
-		</if>
-		<if test="flag==1">
-			SELECT count(*) numbers,
-			substring(release_time,12,2) release_time
-			FROM release_news
-			WHERE
-			<if test="websiteName!=null">
-				website=#{websiteName} AND
-			</if>
-			to_days(release_time) = to_days(now())group by substring(release_time,12,2)
-		</if>
+    <select id="findByTimeNow" resultType="java.util.HashMap" parameterType="java.util.Map">
+        <if test="flag!=1">
+            SELECT count(*) numbers,
+            website
+            FROM release_news
+            WHERE
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            to_days(release_time) = to_days(now())group by website
+            order by numbers ${order}
+        </if>
+        <if test="flag==1">
+            SELECT count(*) numbers,
+            substring(release_time,12,2) release_time
+            FROM release_news
+            WHERE
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            to_days(release_time) = to_days(now())group by substring(release_time,12,2)
+        </if>
 
-	</select>
-	<!--  &lt;< 小于号   &gt;> 大于号  &amp; & 和&apos; ’单引号  &quot; "双引号-->
-	<select id="findByPastTime" resultType="java.util.HashMap" parameterType="java.util.Map">
+    </select>
+    <!--  &lt;< 小于号   &gt;> 大于号  &amp; & 和&apos; ’单引号  &quot; "双引号-->
+    <select id="findByPastTime" resultType="java.util.HashMap" parameterType="java.util.Map">
 
-		<if test="flag!=1">
-			select count(*) numbers,
-			website
-			from release_news AS a
-			where
-			<if test="websiteName!=null">
-				a.website=#{websiteName} AND
-			</if>
-			DATE_SUB(CURDATE(), INTERVAL #{num} DAY)  &lt;= date(release_time) group by a.website
-		</if>
-		<if test="flag ==1">
-			select count(*) numbers,
-			substring(release_time,1,10) release_time
-			FROM release_news
-			WHERE
-			<if test="websiteName!=null">
-				website=#{websiteName} AND
-			</if>
-			DATE_SUB(CURDATE(), INTERVAL #{num} DAY)  &lt;= date(release_time) group by substring(release_time,1,10)
-		</if>
-	</select>
-	<select id="findBetweenTime" resultType="java.util.HashMap" parameterType="java.util.Map">
-		<if test="flag !=1">
-		select count(*) numbers,website
-		from release_news WHERE
-		<if test="websiteName!=null" >
-			website=#{websiteName} AND
-		</if>
-		release_time BETWEEN #{time1} AND #{time2} group by website
-		</if>
-		<if test="flag ==1">
-			select count(*) numbers,substring(release_time,1,10) release_time
-			from release_news WHERE
-			<if test="websiteName!=null" >
-				website=#{websiteName} AND
-			</if>
-			release_time BETWEEN #{time1} AND #{time2} group by substring(release_time,1,10)
-		</if>
-	</select>
-	<select id="findByTimeWeek" resultType="java.util.HashMap" parameterType="java.util.Map">
-		<if test="flag !=1">
-		select count(*) numbers,website
-		from release_news where
-		<if test="websiteName!=null" >
-			website=#{websiteName} AND
-		</if>
-		 YEARWEEK(date_format(release_time,'%Y-%m-%d')) = YEARWEEK(#{time}) group by website
-		</if>
-		<if test="flag ==1">
-			select count(*) numbers,substring(release_time,1,10) release_time
-			from release_news where
-			<if test="websiteName!=null" >
-				website=#{websiteName} AND
-			</if>
-			YEARWEEK(date_format(release_time,'%Y-%m-%d')) = YEARWEEK(#{time}) group by substring(release_time,1,10)
-		</if>
+        <if test="flag!=1">
+            select count(*) numbers,
+            website
+            from release_news AS a
+            where
+            <if test="websiteName!=null">
+                a.website=#{websiteName} AND
+            </if>
+            DATE_SUB(CURDATE(), INTERVAL #{num} DAY) &lt;= date(release_time) group by a.website
+            order by numbers ${order}
+        </if>
+        <if test="flag ==1">
+            select count(*) numbers,
+            substring(release_time,1,10) release_time
+            FROM release_news
+            WHERE
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            DATE_SUB(CURDATE(), INTERVAL #{num} DAY) &lt;= date(release_time) group by substring(release_time,1,10)
+        </if>
+    </select>
+    <select id="findBetweenTime" resultType="java.util.HashMap" parameterType="java.util.Map">
+        <if test="flag !=1">
+            select count(*) numbers,website
+            from release_news WHERE
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            release_time BETWEEN #{time1} AND #{time2} group by website
+            order by numbers ${order}
+        </if>
+        <if test="flag ==1">
+            select count(*) numbers,substring(release_time,1,10) release_time
+            from release_news WHERE
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            release_time BETWEEN #{time1} AND #{time2} group by substring(release_time,1,10)
+        </if>
+    </select>
+    <select id="findByTimeWeek" resultType="java.util.HashMap" parameterType="java.util.Map">
+        <if test="flag !=1">
+            select count(*) numbers,website
+            from release_news where
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            YEARWEEK(date_format(release_time,'%Y-%m-%d')) = YEARWEEK(#{time}) group by website
+            order by numbers ${order}
+        </if>
+        <if test="flag ==1">
+            select count(*) numbers,substring(release_time,1,10) release_time
+            from release_news where
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            YEARWEEK(date_format(release_time,'%Y-%m-%d')) = YEARWEEK(#{time}) group by substring(release_time,1,10)
+        </if>
 
-	</select>
-	<select id="findByTimeMon" resultType="java.util.HashMap" parameterType="java.util.Map">
-	<if test="flag !=1">
-		select count(*) numbers,website
-		from release_news where
-		<if test="websiteName!=null" >
-			website=#{websiteName} AND
-		</if>
-		date_format(release_time,'%Y-%m')=date_format(#{time},'%Y-%m') group by website
-	</if>
-	<if test="flag ==1">
-		select count(*) numbers,substring(release_time,1,10) release_time
-		from release_news where
-		<if test="websiteName!=null" >
-			website=#{websiteName} AND
-		</if>
-		date_format(release_time,'%Y-%m')=date_format(#{time},'%Y-%m') group by substring(release_time,1,10)
-	</if>
-</select>
-	<select id="findByTimeDay" resultType="java.util.HashMap" parameterType="java.util.Map">
-		<if test="flag !=1">
-			select count(*) numbers,website
-			from release_news where
-			<if test="websiteName!=null" >
-				website=#{websiteName} AND
-			</if>
-			release_time like concat (#{time},'%') group by website
-		</if>
-		<if test="flag ==1">
-			select count(*) numbers,substring(release_time,12,2) release_time
-			from release_news where
-			<if test="websiteName!=null" >
-				website=#{websiteName} AND
-			</if>
-			release_time like concat (#{time},'%')  group by substring(release_time,12,2)
-		</if>
-	</select>
+    </select>
+    <select id="findByTimeMon" resultType="java.util.HashMap" parameterType="java.util.Map">
+        <if test="flag !=1">
+            select count(*) numbers,website
+            from release_news where
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            date_format(release_time,'%Y-%m')=date_format(#{time},'%Y-%m') group by website
+            order by numbers ${order}
+        </if>
+        <if test="flag ==1">
+            select count(*) numbers,substring(release_time,1,10) release_time
+            from release_news where
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            date_format(release_time,'%Y-%m')=date_format(#{time},'%Y-%m') group by substring(release_time,1,10)
+        </if>
+    </select>
+    <select id="findByTimeDay" resultType="java.util.HashMap" parameterType="java.util.Map">
+        <if test="flag !=1">
+            select count(*) numbers,website
+            from release_news where
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            release_time like concat (#{time},'%') group by website
+            order by numbers ${order}
+        </if>
+        <if test="flag ==1">
+            select count(*) numbers,substring(release_time,12,2) release_time
+            from release_news where
+            <if test="websiteName!=null">
+                website=#{websiteName} AND
+            </if>
+            release_time like concat (#{time},'%') group by substring(release_time,12,2)
+        </if>
+    </select>
 
-	<select id="getWebsiteList" resultType="java.util.HashMap">
+    <select id="getWebsiteList" resultType="java.util.HashMap">
 		select website from release_news group by website;
 	</select>
 
